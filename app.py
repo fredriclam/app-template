@@ -2,10 +2,14 @@ from flask import Flask, render_template
 import os
 app = Flask(__name__)
 
-@app.route('/resume')
-def main():
+@app.route('/')
+def index():
     message = "hello"
-    return render_template("resume.html", message=message)
+    return render_template("index.html", message=message)
+
+@app.route('/resume')
+def resume_page():
+    return render_template("resume.html")
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 33507))
