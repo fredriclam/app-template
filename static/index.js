@@ -1,6 +1,7 @@
 // Stage initial size
 var defaultSize = [192, 108];
 var aspectRatio = defaultSize[0] / defaultSize[1];
+var bgImagePath = "static/images/yul.jpg";
 
 // Set up stage and renderer
 const app = new PIXI.Application({
@@ -28,7 +29,7 @@ window.onresize = function(event) {
 };
 resizePixi();
 // Loading
-PIXI.loader.add("static/images/yul.JPG").load((loader, resources) => {
+PIXI.loader.add(bgImagePath).load((loader, resources) => {
   state = doneLoading;
   console.log("Resources loaded.");
 })
@@ -44,7 +45,7 @@ function loading() {
 
 // Done loading state
 function doneLoading() {
-  bgTexture = new PIXI.Texture.fromImage('static/images/yul.jpg');
+  bgTexture = new PIXI.Texture.fromImage(bgImagePath);
   bgTexture.textureAspectRatio = bgTexture.width / bgTexture.height;
   bgSprite = new PIXI.Sprite(bgTexture);
   stage.addChild(bgSprite);
