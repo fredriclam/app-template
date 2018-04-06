@@ -33,7 +33,7 @@ function init() {
   resizePixi();
 
   // Create loading screen
-  loadingText = new PIXI.Text("Loading...",
+  loadingText = new PIXI.Text(window.innerWidth + "",
     {fontFamily :"Arial",
     fontSize: 36,
     fill: "white",
