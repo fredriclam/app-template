@@ -56,7 +56,7 @@ function init() {
 
   bgImagePath = bgImagePathLarge;
   // Check for small screens
-  if (window.innerWidth < 800){
+  if (window.innerWidth < 1200){
     bgImagePath = bgImagePathMobile;
   }
   // Load background image
