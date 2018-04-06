@@ -70,7 +70,8 @@ function stretchToFit(){
 
 // Main (animation) state
 function mainState() {
-  window.requestAnimationFrame(() => {renderer.render(stage)});
+  renderer.render(stage);
+  // window.requestAnimationFrame(() => {renderer.render(stage)});
 };
 
 // Resize callback
