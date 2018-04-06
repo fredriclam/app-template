@@ -44,7 +44,7 @@ function loading() {
 
 // Done loading state
 function doneLoading() {
-  bgTexture = new PIXI.Texture.fromImage('static/images/yul.JPG');
+  bgTexture = new PIXI.Texture.fromImage('static/images/yul.jpg');
   bgTexture.textureAspectRatio = bgTexture.width / bgTexture.height;
   bgSprite = new PIXI.Sprite(bgTexture);
   stage.addChild(bgSprite);
