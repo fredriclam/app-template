@@ -1,11 +1,21 @@
 class Button {
-  constructor(x, y, text) {
+  constructor(x, y, text, url) {
     this.inFocus = false;
     this.initialAlpha = 0.2;
+    this.maxAlpha = 0.6;
     this.animSpeed = 0.1;
     this.animProgress = 0.0;
+    this.url = url;
 
-    this.text = new PIXI.Text(text.toUpperCase(), {fontFamily: 'Helvetica', fill: 0xFFFFFF});
+    this.text = new PIXI.Text(text.toUpperCase(), {
+      fontFamily: 'Arial',
+      fill: 0xFFFFFF,
+      letterSpacing: -2,
+      dropShadow: true,
+      dropShadowBlur: 2,
+      dropShadowColor: 0x000000,
+      dropShadowDistance: 1
+    });
     this.text.style.fontSize = 32;
     this.text.x = x;
     this.text.y = y;
@@ -13,12 +23,11 @@ class Button {
     this.text.anchor.y = 0.5;
 
 
-
+    // Button frame (border)
     this.frameGraphics = new PIXI.Graphics();
-    // this.frameGraphics.beginFill(0xFFFFFF);
-    // this.frameGraphics.fillAlpha = 0.2;
     this.frameGraphics.lineStyle(Math.floor(this.text.style.fontSize/6), 0xFFFFFF);
-    this.frameGraphics.drawRect(0, 0, this.text.width * 1.5, this.text.height * 1.5);
+    this.frameGraphics.drawRect(0, 0, 200, this.text.height * 1.5);
+    // this.frameGraphics.drawRect(0, 0, this.text.width * 1.5, this.text.height * 1.5);
 
     this.frameSprite = new PIXI.Sprite(app.renderer.generateTexture(this.frameGraphics));
     this.frameSprite.x = x;
@@ -59,16 +68,16 @@ class Button {
 
   onButtonOver(){
     this.inFocus = true;
+    uiFocus = true;
   }
 
   onButtonOut(){
     this.inFocus = false;
+    uiFocus = false;
   }
 
   onButtonTap(){
-    if(this.inFocus){
-      console.log("Link");
-    }
+    window.open(this.url, "_self");
   }
 
   updateCallback(delta) {
@@ -88,11 +97,11 @@ class Button {
     }
     // Map animation progress to button box alpha
     this.boxSprite.alpha = this.initialAlpha +
-      (1.0 - this.initialAlpha) * this.animProgress;
+      (this.maxAlpha - this.initialAlpha) * this.animProgress;
     // Map animation progress to text colour
-    this.text.style.fill = '#' + this.scalarToHex(this.animProgress)
-      + this.scalarToHex(this.animProgress)
-      + this.scalarToHex(this.animProgress);
+    this.text.style.fill = '#' + this.scalarToHex(0.8*this.animProgress)
+      + this.scalarToHex(0.8*this.animProgress)
+      + this.scalarToHex(0.8*this.animProgress);
   }
 
   // Convert [0, 1] to hex (00 to FF). Rounds 1 to FF.
@@ -113,62 +122,3 @@ class Button {
     console.warn("Placeholder function hexToComponent called");
   }
 }
-
-//
-//     button
-//         // Mouse & touch events are normalized into
-//         // the pointer* events for handling different
-//         // button events.
-//         .on('pointerdown', onButtonDown)
-//         .on('pointerup', onButtonUp)
-//         .on('pointerupoutside', onButtonUp)
-//         .on('pointerover', onButtonOver)
-//         .on('pointerout', onButtonOut);
-//
-//         // Use mouse-only events
-//         // .on('mousedown', onButtonDown)
-//         // .on('mouseup', onButtonUp)
-//         // .on('mouseupoutside', onButtonUp)
-//         // .on('mouseover', onButtonOver)
-//         // .on('mouseout', onButtonOut)
-//
-//         // Use touch-only events
-//         // .on('touchstart', onButtonDown)
-//         // .on('touchend', onButtonUp)
-//         // .on('touchendoutside', onButtonUp)
-//
-//     // add it to the stage
-//     app.stage.addChild(button);
-//
-//
-// function onButtonDown() {
-//     this.isdown = true;
-//     this.texture = textureButtonDown;
-//     this.alpha = 1;
-// }
-//
-// function onButtonUp() {
-//     this.isdown = false;
-//     if (this.isOver) {
-//         this.texture = textureButtonOver;
-//     }
-//     else {
-//         this.texture = textureButton;
-//     }
-// }
-//
-// function onButtonOver() {
-//     this.isOver = true;
-//     if (this.isdown) {
-//         return;
-//     }
-//     this.texture = textureButtonOver;
-// }
-//
-// function onButtonOut() {
-//     this.isOver = false;
-//     if (this.isdown) {
-//         return;
-//     }
-//     this.texture = textureButton;
-// }

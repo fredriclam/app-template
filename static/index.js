@@ -1,10 +1,12 @@
 // Stage initial size
 var defaultSize = [192, 108];
+// Compute initial aspect ratio
 var aspectRatio = defaultSize[0] / defaultSize[1];
+// Static paths to background assets
 var bgImagePathLarge = "static/images/yul.jpg";
 var bgImagePathMobile = "static/images/yul_small.jpg"; // Smaller texture
 
-// Set up stage and renderer
+// Set up stage and renderer with placeholder size
 const app = new PIXI.Application({
   width: 800,
   height: 600,
@@ -12,19 +14,22 @@ const app = new PIXI.Application({
   transparent: false,
   resolution: 1
 });
+// Aliases
 const stage = app.stage;
 const renderer = app.renderer; // PIXI.autoDetectRenderer(defaultSize[0], defaultSize[1]);
+// const sprites = {};
+
 document.body.appendChild(renderer.view);
-// List sprites out
-const sprites = {};
 
 // Set state to initial state
 var state = init;
+var uiFocus =  false;
+var animSpeed = 0.1;
 // Global declarations
 var bgTexture;
 var bgSprite;
 
-// Call initial state once
+// Load initial state
 init();
 
 // Initial state
@@ -77,6 +82,7 @@ function loading() {
 
 // Done loading state
 function doneLoading() {
+  // Make background
   bgTexture = new PIXI.Texture.fromImage(bgImagePath);
   bgTexture.textureAspectRatio = bgTexture.width / bgTexture.height;
   bgSprite = new PIXI.Sprite(bgTexture);
@@ -85,11 +91,53 @@ function doneLoading() {
   bgSprite.y = 0;
   bgSprite.anchor.x = 0.5;
   bgSprite.anchor.y = 0;
-  stretchToFit();
-  state = mainState;
 
-  galleryButton = new Button(0.75*window.innerWidth,
-    0.65*window.innerHeight, "Hi");
+  // Control blur state
+  bgSprite.maxBlurStrength = 0.7;
+  bgSprite.animProgress = 0;
+  bgSprite.animSpeed = animSpeed;
+  bgSprite.filters = [new PIXI.filters.BlurFilter(1, 1, 1)];
+  bgSprite.filters[0].blur = bgSprite.maxBlurStrength * bgSprite.animProgress;
+
+  // Re-size background to fit
+  stretchToFit();
+
+  // Make simple title
+  titleText = new PIXI.Text("YOU ARE HERE.", {
+    fontSize: 64,
+    fontFamily: "Arial",
+    letterSpacing: -3,
+    fill: 0xFFFFFF,
+    dropShadow: true,
+    dropShadowColor: 0x000000,
+    dropShadowBlur: 3,
+    dropShadowDistance: 1
+  });
+  titleText.anchor.set(0.5);
+  titleText.x = window.innerWidth / 2;
+  titleText.y = window.innerHeight / 3;
+  app.stage.addChild(titleText);
+
+
+  // Add UI buttons
+  galleryButton = new Button(0.33*window.innerWidth,
+    0.67*window.innerHeight, "GALLERY", '#');
+  bioButton = new Button(0.67*window.innerWidth,
+    0.67*window.innerHeight, "BIO", 'resume');
+
+  // Add background blur monitor
+  app.ticker.add((delta) => {
+    if (uiFocus) {
+      bgSprite.animProgress += bgSprite.animSpeed * delta;
+    }
+    else {
+      bgSprite.animProgress -= bgSprite.animSpeed * delta;
+    }
+    bgSprite.animProgress = Math.min(Math.max(bgSprite.animProgress, 0.0), 1.0);
+    bgSprite.filters[0].blur = bgSprite.maxBlurStrength * bgSprite.animProgress;
+  })
+  // Switch state to main
+  state = mainState;
 };
 
 // Stretches bgSprite to fit inner screen
@@ -105,10 +153,11 @@ function stretchToFit(){
 
 // Main (animation) state
 function mainState() {
-  // Filtering
-
-  // Render
-  window.requestAnimationFrame(() => {renderer.render(stage)});
+  uiFocus = galleryButton.inFocus | bioButton.inFocus;
+  // Render once every time state is processed
+  window.requestAnimationFrame(() => {
+    renderer.render(stage);
+  });
 };
 
 // Resize callback
