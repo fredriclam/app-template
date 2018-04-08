@@ -87,6 +87,9 @@ function doneLoading() {
   bgSprite.anchor.y = 0;
   stretchToFit();
   state = mainState;
+
+  galleryButton = new Button(0.75*window.innerWidth,
+    0.65*window.innerHeight, "Hi");
 };
 
 // Stretches bgSprite to fit inner screen
@@ -102,6 +105,9 @@ function stretchToFit(){
 
 // Main (animation) state
 function mainState() {
+  // Filtering
+
+  // Render
   window.requestAnimationFrame(() => {renderer.render(stage)});
 };
 
